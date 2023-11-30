@@ -1,0 +1,27 @@
+# Versi Docker Compose yang digunakan
+version: '3.7'
+
+# Definisi layanan yang akan dijalankan
+services:
+  # Layanan untuk database (item-db)
+  item-db:
+    image: mongo:3  # Menggunakan image MongoDB versi 3
+    restart: always  # Selalu restart service jika terhenti
+    ports:
+      - 27017:27017  # Memetakan port 27017 dari host ke container
+    volumes:
+      - app-db:/data/db  # Menggunakan volume 'app-db' untuk menyimpan data
+
+  # Layanan untuk aplikasi (item-app)
+  item-app:
+    image: bryanflava/item-app:v1  # Menggunakan image 'bryanflava/item-app:v1'
+    depends_on:
+      - item-db  # Bergantung pada layanan item-db
+    restart: always  # Selalu restart service jika terhenti
+    ports:
+      - 80:8080  # Memetakan port 80 dari host ke port 8080 di container
+
+# Definisi volume yang digunakan oleh layanan
+volumes:
+  # Volume 'app-db' digunakan untuk menyimpan data dari layanan item-db
+  app-db:
